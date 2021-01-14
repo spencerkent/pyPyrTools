@@ -6,5 +6,7 @@ just call ``import _set_the_path``. There are probably better ways to do this.
 import sys
 import os
 tests_fullpath = os.path.dirname(os.path.abspath(__file__))
-toplevel_dir_fullpath = tests_fullpath[:tests_fullpath.find('pyPyrTools/pyPyrTools')+11]
-sys.path.insert(0, toplevel_dir_fullpath)
+pyPyrTools_module_fullpath = tests_fullpath[:test_fullpath.rfind('/')]
+repo_fullpath = pyPyrTools_module_fullpath[:pyPyrTools_module_fullpath.rfind('/')]
+sys.path.insert(0, pyPyrTools_module_fullpath)
+sys.path.insert(0, repo_fullpath)
