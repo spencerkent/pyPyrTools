@@ -1,11 +1,15 @@
+import _set_the_path
+
 import unittest
 import math
 import numpy as np
 import scipy.io
-import Image
+from PIL import Image
 from operator import mul
 import sys
+
 import pyPyrTools as ppt
+
 
 class maxPyrHtTests(unittest.TestCase):
     def test1(self):
