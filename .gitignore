@@ -21,3 +21,9 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# ipython notebook checkpoints
+.ipynb_checkpoints/
+
+# vim
+*.swp

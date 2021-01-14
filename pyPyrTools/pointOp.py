@@ -2,7 +2,7 @@ import numpy
 import ctypes
 import os
 
-libpath = os.path.dirname(os.path.realpath(__file__))+'/../wrapConv.so'
+libpath = os.path.dirname(os.path.realpath(__file__))+'/wrapConv.so'
 # load the C library
 lib = ctypes.cdll.LoadLibrary(libpath)
 
