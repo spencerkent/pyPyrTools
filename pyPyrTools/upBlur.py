@@ -4,30 +4,30 @@ from upConv import upConv
 
 def upBlur(*args):
     ''' RES = upBlur(IM, LEVELS, FILT)
-    
+
         Upsample and blur an image.  The blurring is done with filter
         kernel specified by FILT (default = 'binom5'), which can be a string
         (to be passed to namedFilter), a vector (applied separably as a 1D
         convolution kernel in X and Y), or a matrix (applied as a 2D
         convolution kernel).  The downsampling is always by 2 in each
         direction.
-    
+
         The procedure is applied recursively LEVELS times (default=1).
-    
+
         Eero Simoncelli, 4/97. Python port by Rob Young, 10/15.   '''
-    
+
     #---------------------------------------------------------------
     # REQUIRED ARGS
-    
+
     if len(args) == 0:
-        print 'Usage: upBlur(image, levels, filter)'
-        print 'first argument is required'
+        print('Usage: upBlur(image, levels, filter)')
+        print('first argument is required')
     else:
         im = numpy.array(args[0])
 
     #---------------------------------------------------------------
     # OPTIONAL ARGS
-    
+
     if len(args) > 1:
         nlevs = args[1]
     else:

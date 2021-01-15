@@ -2,33 +2,33 @@ import numpy
 from PIL import ImageTk
 import PIL
 import scipy.stats
-import Tkinter
+import tkinter
 import math
 from round import round
 
 def showIm(*args):
     # check and set input parameters
     if len(args) == 0:
-        print "showIm( matrix, range, zoom, label, nshades )"
-        print "  matrix is string. It should be the name of a 2D array."
-        print "  range is a two element tuple.  It specifies the values that "
-        print "    map to the min and max colormap values.  Passing a value "
-        print "    of 'auto' (default) sets range=[min,max].  'auto2' sets "
-        print "    range=[mean-2*stdev, mean+2*stdev].  'auto3' sets "
-        print "    range=[p1-(p2-p1)/8, p2+(p2-p1)/8], where p1 is the 10th "
-        print "    percientile value of the sorted matix samples, and p2 is "
-        print "    the 90th percentile value."
-        print "  zoom specifies the number of matrix samples per screen pixel."
-        print "    It will be rounded to an integer, or 1 divided by an "
-        print "    integer."
+        print("showIm( matrix, range, zoom, label, nshades )")
+        print("  matrix is string. It should be the name of a 2D array.")
+        print("  range is a two element tuple.  It specifies the values that ")
+        print("    map to the min and max colormap values.  Passing a value ")
+        print("    of 'auto' (default) sets range=[min,max].  'auto2' sets ")
+        print("    range=[mean-2*stdev, mean+2*stdev].  'auto3' sets ")
+        print("    range=[p1-(p2-p1)/8, p2+(p2-p1)/8], where p1 is the 10th ")
+        print("    percientile value of the sorted matix samples, and p2 is ")
+        print("    the 90th percentile value.")
+        print("  zoom specifies the number of matrix samples per screen pixel.")
+        print("    It will be rounded to an integer, or 1 divided by an ")
+        print("    integer.")
         #print "    A value of 'same' or 'auto' (default) causes the "
         #print "    zoom value to be chosen automatically to fit the image into"
         #print "    the current axes."
         #print "    A value of 'full' fills the axis region "
         #print "    (leaving no room for labels)."
-        print "  label - A string that is used as a figure title."
-        print "  NSHADES (optional) specifies the number of gray shades, "
-        print "    and defaults to the size of the current colormap. "
+        print("  label - A string that is used as a figure title.")
+        print("  NSHADES (optional) specifies the number of gray shades, ")
+        print("    and defaults to the size of the current colormap. ")
 
     if len(args) > 0:   # matrix entered
         matrix = numpy.array(args[0])
@@ -38,7 +38,7 @@ def showIm(*args):
             if args[1] is "auto":
                 imRange = ( numpy.amin(matrix), numpy.amax(matrix) )
             elif args[1] is "auto2":
-                imRange = ( matrix.mean()-2*matrix.std(), 
+                imRange = ( matrix.mean()-2*matrix.std(),
                             matrix.mean()+2*matrix.std() )
             elif args[1] is "auto3":
                 #p1 = numpy.percentile(matrix, 10)  not in python 2.6.6?!
@@ -47,16 +47,16 @@ def showIm(*args):
                 p2 = scipy.stats.scoreatpercentile(numpy.hstack(matrix), 90)
                 imRange = (p1-(p2-p1)/8.0, p2+(p2-p1)/8.0)
             else:
-                print "Error: range of %s is not recognized." % args[1]
-                print "       please use a two element tuple or "
-                print "       'auto', 'auto2' or 'auto3'"
-                print "       enter 'showIm' for more info about options"
+                print("Error: range of %s is not recognized." % args[1])
+                print("       please use a two element tuple or ")
+                print("       'auto', 'auto2' or 'auto3'")
+                print("       enter 'showIm' for more info about options")
                 return
         else:
             imRange = args[1][0], args[1][1]
     else:
         imRange = ( numpy.amin(matrix), numpy.amax(matrix) )
-    
+
     if len(args) > 2:   # zoom entered
         zoom = args[2]
     else:
@@ -82,7 +82,7 @@ def showIm(*args):
                     "+200+200")
     # put in top spacer
     spacer = Tkinter.Label(master, text='').pack()
-    
+
     # create canvas
     canvas = Tkinter.Canvas(master, width=canvas_width, height=canvas_height)
     canvas.pack()
@@ -90,7 +90,7 @@ def showIm(*args):
     if (matrix < 0).any():
         matrix = matrix + math.fabs(matrix.min())
     matrix = (matrix / matrix.max()) * 255.0
-    print matrix.astype('uint8')[0,:]
+    print(matrix.astype('uint8')[0,:])
     img = PIL.Image.fromarray(matrix.astype('uint8'))
 
     # make colormap
@@ -114,7 +114,7 @@ def showIm(*args):
         img = img.resize((canvas_width, canvas_height), Image.NEAREST)
 
     # apply image to canvas
-    imgPI = ImageTk.PhotoImage(img)    
+    imgPI = ImageTk.PhotoImage(img)
     canvas.create_image(0,0, anchor=Tkinter.NW, image=imgPI)
 
     # add labels
@@ -122,5 +122,5 @@ def showIm(*args):
     rangeLabel = Tkinter.Label(master, text=rangeStr).pack()
     dimsStr = 'Dims: [%d, %d] / %d' % (matrix.shape[0], matrix.shape[1], zoom)
     dimsLabel = Tkinter.Label(master, text=dimsStr).pack()
-    
+
     Tkinter.mainloop()

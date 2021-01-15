@@ -10,7 +10,7 @@ import cmath
 class SCFpyr(SFpyr):
     filt = ''
     edges = ''
-    
+
     #constructor
     def __init__(self, *args):    # (image, height, order, twidth)
         self.pyrType = 'steerableFrequency'
@@ -18,7 +18,7 @@ class SCFpyr(SFpyr):
         if len(args) > 0:
             self.image = args[0]
         else:
-            print "First argument (image) is required."
+            print("First argument (image) is required.")
             return
 
         #------------------------------------------------
@@ -27,15 +27,15 @@ class SCFpyr(SFpyr):
         max_ht = numpy.floor( numpy.log2( min(self.image.shape) ) ) - 2
         if len(args) > 1:
             if(args[1] > max_ht):
-                print "Error: cannot build pyramid higher than %d levels." % (max_ht)
+                print("Error: cannot build pyramid higher than %d levels." % (max_ht))
             ht = args[1]
         else:
             ht = max_ht
         ht = int(ht)
-            
+
         if len(args) > 2:
             if args[2] > 15 or args[2] < 0:
-                print "Warning: order must be an integer in the range [0,15]. Truncating."
+                print("Warning: order must be an integer in the range [0,15]. Truncating.")
                 order = min( max(args[2],0), 15 )
             else:
                 order = args[2]
@@ -46,7 +46,7 @@ class SCFpyr(SFpyr):
 
         if len(args) > 3:
             if args[3] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[3]
@@ -65,12 +65,12 @@ class SCFpyr(SFpyr):
                                  numpy.pi*numpy.array(range(nbands))/nbands,
                                  'even')
         #------------------------------------------------------
-        
+
         dims = numpy.array(self.image.shape)
         ctr = numpy.ceil((numpy.array(dims)+0.5)/2).astype(int)
-        
+
         (xramp, yramp) = numpy.meshgrid((numpy.array(range(1,dims[1]+1))-ctr[1])/
-                                     (dims[1]/2), 
+                                     (dims[1]/2),
                                      (numpy.array(range(1,dims[0]+1))-ctr[0])/
                                      (dims[0]/2))
         angle = numpy.arctan2(yramp, xramp)
@@ -104,7 +104,7 @@ class SCFpyr(SFpyr):
         for i in range(ht):
             bands = numpy.zeros((lodft.shape[0]*lodft.shape[1], nbands))
             bind = numpy.zeros((nbands, 2))
-        
+
             Xrcos -= numpy.log2(2)
 
             lutsize = 1024
@@ -114,18 +114,18 @@ class SCFpyr(SFpyr):
             const = (2**(2*order))*(scipy.misc.factorial(order, exact=True)**2)/float(nbands*scipy.misc.factorial(2*order, exact=True))
 
             alfa = ( (numpy.pi+Xcosn) % (2.0*numpy.pi) ) - numpy.pi
-            Ycosn = ( 2.0*numpy.sqrt(const) * (numpy.cos(Xcosn)**order) * 
+            Ycosn = ( 2.0*numpy.sqrt(const) * (numpy.cos(Xcosn)**order) *
                       (numpy.abs(alfa)<numpy.pi/2.0).astype(int) )
             log_rad_tmp = numpy.reshape(log_rad, (1,log_rad.shape[0]*
                                                   log_rad.shape[1]))
             himask = pointOp(log_rad_tmp, Yrcos, Xrcos[0], Xrcos[1]-Xrcos[0], 0)
-            
+
             himask = himask.reshape(lodft.shape[0], lodft.shape[1])
             for b in range(nbands):
-                angle_tmp = numpy.reshape(angle, 
+                angle_tmp = numpy.reshape(angle,
                                           (1,angle.shape[0]*angle.shape[1]))
                 anglemask = pointOp(angle_tmp, Ycosn,
-                                    Xcosn[0]+numpy.pi*b/nbands, 
+                                    Xcosn[0]+numpy.pi*b/nbands,
                                     Xcosn[1]-Xcosn[0], 0)
                 anglemask = anglemask.reshape(lodft.shape[0], lodft.shape[1])
                 banddft = (cmath.sqrt(-1)**order) * lodft * anglemask * himask
@@ -144,7 +144,7 @@ class SCFpyr(SFpyr):
             angle = angle[lostart[0]:loend[0], lostart[1]:loend[1]]
             lodft = lodft[lostart[0]:loend[0], lostart[1]:loend[1]]
             YIrcos = numpy.abs(numpy.sqrt(1.0 - Yrcos**2))
-            log_rad_tmp = numpy.reshape(log_rad, 
+            log_rad_tmp = numpy.reshape(log_rad,
                                         (1,log_rad.shape[0]*log_rad.shape[1]))
             lomask = pointOp(log_rad_tmp, YIrcos, Xrcos[0], Xrcos[1]-Xrcos[0],
                              0)
@@ -168,7 +168,7 @@ class SCFpyr(SFpyr):
 
         if len(args) > 2:
             if args[2] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[2]

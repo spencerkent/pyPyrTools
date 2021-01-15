@@ -20,7 +20,7 @@ class pyramid:  # pyramid
 
     # constructor
     def __init__(self):
-        print "please specify type of pyramid to create (Gpry, Lpyr, etc.)"
+        print("please specify type of pyramid to create (Gpry, Lpyr, etc.)")
         return
 
     # methods
@@ -34,14 +34,14 @@ class pyramid:  # pyramid
 class Spyr(pyramid):
     filt = ''
     edges = ''
-    
+
     #constructor
     def __init__(self, *args):    # (image height, filter file, edges)
         self.pyrType = 'steerable'
         if len(args) > 0:
             self.image = numpy.array(args[0])
         else:
-            print "First argument (image) is required."
+            print("First argument (image) is required.")
             return
 
         #------------------------------------------------
@@ -57,10 +57,10 @@ class Spyr(pyramid):
             elif args[2] == 'sp5Filters':
                 filters = pyPyrUtils.sp5Filters()
             elif os.path.isfile(args[2]):
-                print "Filter files not supported yet"
+                print("Filter files not supported yet")
                 return
             else:
-                print "filter parameters value %s not supported" % (args[2])
+                print("filter parameters value %s not supported" % (args[2]))
                 return
         else:
             filters = pyPyrUtils.sp1Filters()
@@ -71,14 +71,14 @@ class Spyr(pyramid):
         lofilt = filters['lofilt']
         bfilts = filters['bfilts']
         steermtx = filters['mtx']
-        
+
         max_ht = pyPyrUtils.maxPyrHt(self.image.shape, lofilt.shape)
         if len(args) > 1:
             if args[1] == 'auto':
                 ht = max_ht
             elif args[1] > max_ht:
-                print "Error: cannot build pyramid higher than %d levels." % (
-                    max_ht)
+                print("Error: cannot build pyramid higher than %d levels." % (
+                    max_ht))
                 return
             else:
                 ht = args[1]
@@ -134,22 +134,22 @@ class Spyr(pyramid):
     # methods
     def set(self, *args):
         if len(args) != 3:
-            print 'Error: three input parameters required:'
-            print '  set(band, location, value)'
-            print '  where band and value are integer and location is a tuple'
+            print('Error: three input parameters required:')
+            print('  set(band, location, value)')
+            print('  where band and value are integer and location is a tuple')
         if isinstance(args[1], (int, long)):
             self.pyr[args[0]][0][args[1]] = args[2]
         elif isinstance(args[1], tuple):
-            self.pyr[args[0]][args[1][0]][args[1][1]] = args[2] 
+            self.pyr[args[0]][args[1][0]][args[1][1]] = args[2]
         else:
-            print 'Error: location parameter must be int or tuple!'
+            print('Error: location parameter must be int or tuple!')
             return
 
     def spyrLev(self, lev):
         if lev < 0 or lev > self.spyrHt()-1:
-            print 'Error: level parameter must be between 0 and %d!' % (self.spyrHt()-1)
+            print('Error: level parameter must be between 0 and %d!' % (self.spyrHt()-1))
             return
-        
+
         levArray = []
         for n in range(self.numBands()):
             levArray.append(self.spyrBand(lev, n))
@@ -159,10 +159,10 @@ class Spyr(pyramid):
 
     def spyrBand(self, lev, band):
         if lev < 0 or lev > self.spyrHt()-1:
-            print 'Error: level parameter must be between 0 and %d!' % (self.spyrHt()-1)
+            print('Error: level parameter must be between 0 and %d!' % (self.spyrHt()-1))
             return
         if band < 0 or band > self.numBands()-1:
-            print 'Error: band parameter must be between 0 and %d!' % (self.numBands()-1)
+            print('Error: band parameter must be between 0 and %d!' % (self.numBands()-1))
 
         return self.band( ((lev*self.numBands())+band)+1 )
 
@@ -179,7 +179,7 @@ class Spyr(pyramid):
             return 0
         else:
             b = 2
-            while ( b <= len(self.pyrSize) and 
+            while ( b <= len(self.pyrSize) and
                     self.pyrSize[b] == self.pyrSize[1] ):
                 b += 1
             return b-1
@@ -203,10 +203,10 @@ class Spyr(pyramid):
             elif args[0] == 'sp5Filters':
                 filters = pyPyrUtils.sp5Filters()
             elif os.path.isfile(args[0]):
-                print "Filter files not supported yet"
+                print("Filter files not supported yet")
                 return
             else:
-                print "filter %s not supported" % (args[0])
+                print("filter %s not supported" % (args[0]))
                 return
         else:
             filters = pyPyrUtils.sp1Filters()
@@ -223,7 +223,7 @@ class Spyr(pyramid):
             edges = args[1]
         else:
             edges = 'reflect1'
-            
+
         if len(args) > 2:
             levs = args[2]
         else:
@@ -235,14 +235,14 @@ class Spyr(pyramid):
             bands = 'all'
 
         #---------------------------------------------------------
-        
+
         maxLev = 2 + self.spyrHt()
         if levs == 'all':
             levs = numpy.array(range(maxLev))
         else:
             levs = numpy.array(levs)
             if (levs < 0).any() or (levs >= maxLev).any():
-                print "Error: level numbers must be in the range [0, %d]." % (maxLev-1)
+                print("Error: level numbers must be in the range [0, %d]." % (maxLev-1))
                 return
             else:
                 levs = numpy.array(levs)
@@ -253,7 +253,7 @@ class Spyr(pyramid):
         else:
             bands = numpy.array(bands)
             if (bands < 0).any() or (bands > bfilts.shape[1]).any():
-                print "Error: band numbers must be in the range [0, %d]." % (self.numBands()-1)
+                print("Error: band numbers must be in the range [0, %d]." % (self.numBands()-1))
                 return
             else:
                 bands = numpy.array(bands)
@@ -263,7 +263,7 @@ class Spyr(pyramid):
         Nbands = self.numBands()
 
         reconList = []  # pyr indices used in reconstruction
-        
+
         for lev in levs:
             if lev == 0:
                 reconList.append(0)
@@ -274,7 +274,7 @@ class Spyr(pyramid):
             else:
                 for band in bands:
                     reconList.append( ((lev-1) * Nbands) + band + 1)
-                    
+
         reconList = numpy.sort(reconList)[::-1]  # deepest level first
 
         # initialize reconstruction
@@ -288,7 +288,7 @@ class Spyr(pyramid):
         for level in range(Nlevs):
             maxLevIdx = ((maxLev-2) * Nbands) + 1
             resSzIdx = maxLevIdx - (level * Nbands) - 1
-            recon = pyPyrUtils.upConv(image = recon, filt = lofilt, 
+            recon = pyPyrUtils.upConv(image = recon, filt = lofilt,
                                       edges = edges, step = (2,2),
                                       start = (0,0),
                                       stop = self.pyrSize[resSzIdx])
@@ -296,21 +296,21 @@ class Spyr(pyramid):
             bandImageIdx = 1 + (((Nlevs-1)-level) * Nbands)
             for band in range(Nbands-1,-1,-1):
                 if bandImageIdx in reconList:
-                    filt = bfilts[:,(Nbands-1)-band].reshape(bfiltsz, 
+                    filt = bfilts[:,(Nbands-1)-band].reshape(bfiltsz,
                                                              bfiltsz,
                                                              order='F')
 
-                    recon = pyPyrUtils.upConv(image = self.pyr[bandImageIdx], 
+                    recon = pyPyrUtils.upConv(image = self.pyr[bandImageIdx],
                                               filt = filt, edges = edges,
                                               stop = (self.pyrSize[bandImageIdx][0],
                                                       self.pyrSize[bandImageIdx][1]),
                                               result = recon)
                     bandImageIdx += 1
-             
+
 
         # apply lo0filt
         sz = recon.shape
-        recon = pyPyrUtils.upConv(image = recon, filt = lo0filt, 
+        recon = pyPyrUtils.upConv(image = recon, filt = lo0filt,
                                   edges = edges, stop = sz)
 
         # apply hi0filt if needed
@@ -319,9 +319,9 @@ class Spyr(pyramid):
                                       edges = edges, start = (0,0),
                                       step = (1,1), stop = recon.shape,
                                       result = recon)
-                
+
         return recon
-    
+
     #def showPyr(self, *args):
     def showPyr(self, prange = 'auto2', gap = 1, scale = 2, disp = 'qt'):
         ht = self.spyrHt()
@@ -384,7 +384,7 @@ class Spyr(pyramid):
             stdev = numpy.sqrt( numpy.var(band) )
             prange[nind-1,:] = numpy.array([av-2*stdev, av+2*stdev])
         elif isinstance(prange, basestring):
-            print "Error:Bad RANGE argument: %s'" % (prange)
+            print("Error:Bad RANGE argument: %s'" % (prange))
         elif prange.shape[0] == 1 and prange.shape[1] == 2:
             scales = numpy.power(scale, range(ht))
             scales = numpy.outer( numpy.ones((nbands,1)), scales )
@@ -404,6 +404,10 @@ class Spyr(pyramid):
         else:
             ncols = int(numpy.ceil((nbands+1)/2))
             nrows = int(numpy.ceil(nbands/2))
+        #^ SK [1/14/21]: These lines were in the original python2.7 version,
+        #  but I'm not sure if they're correct for python3+, namely integer
+        #  division with rounding off. If something is weird with the steerable
+        #  pyramid, look here first.
 
         a = numpy.array(range(1-nrows, 1))
         b = numpy.zeros((1,ncols))[0]
@@ -412,7 +416,7 @@ class Spyr(pyramid):
         d = range(-1, -ncols-1, -1)
         cd = numpy.concatenate((c,d))
         relpos = numpy.vstack((ab,cd)).T
-        
+
         if nbands > 1:
             mvpos = numpy.array([-1, -1]).reshape(1,2)
         else:
@@ -426,7 +430,7 @@ class Spyr(pyramid):
             if nbands < 5:         # to align edges
                 sz += gap * (ht-lnum)
             llpos[ind1:ind1+nbands, :] = numpy.dot(relpos, numpy.diag(sz)) + ( numpy.ones((nbands,1)) * basepos )
-    
+
         # lowpass band
         sz = numpy.array(self.pyrSize[nind-1]) + gap
         basepos += mvpos * sz
@@ -437,24 +441,24 @@ class Spyr(pyramid):
         llpos[0,:] = numpy.array([1, 1])
         urpos = llpos + self.pyrSize
         d_im = numpy.zeros((numpy.amax(urpos), numpy.amax(urpos)))
-        
+
         # paste bands into image, (im-r1)*(nshades-1)/(r2-r1) + 1.5
         nshades = 64;
 
         for bnum in range(1,nind):
             mult = (nshades-1) / (prange[bnum,1]-prange[bnum,0])
-            d_im[llpos[bnum,0]:urpos[bnum,0], 
+            d_im[llpos[bnum,0]:urpos[bnum,0],
                  llpos[bnum,1]:urpos[bnum,1]] = mult * self.band(bnum) + (1.5-mult*prange[bnum,0])
 
         if disp == 'qt':
             pyPyrUtils.showIm(d_im[:self.pyrSize[0][0]*2,:])
         elif disp == 'nb':
             JBhelpers.showIm(d_im[:self.pyrSize[0][0]*2,:])
- 
+
 class SFpyr(Spyr):
     filt = ''
     edges = ''
-    
+
     #constructor
     def __init__(self, *args):    # (image, height, order, twidth)
         self.pyrType = 'steerableFrequency'
@@ -462,7 +466,7 @@ class SFpyr(Spyr):
         if len(args) > 0:
             self.image = args[0]
         else:
-            print "First argument (image) is required."
+            print("First argument (image) is required.")
             return
 
         #------------------------------------------------
@@ -471,15 +475,15 @@ class SFpyr(Spyr):
         max_ht = numpy.floor( numpy.log2( min(self.image.shape) ) ) - 2
         if len(args) > 1:
             if(args[1] > max_ht):
-                print "Error: cannot build pyramid higher than %d levels." % (max_ht)
+                print("Error: cannot build pyramid higher than %d levels." % (max_ht))
             ht = args[1]
         else:
             ht = max_ht
         ht = int(ht)
-            
+
         if len(args) > 2:
             if args[2] > 15 or args[2] < 0:
-                print "Warning: order must be an integer in the range [0,15]. Truncating."
+                print("Warning: order must be an integer in the range [0,15]. Truncating.")
                 order = min( max(args[2],0), 15 )
             else:
                 order = args[2]
@@ -490,7 +494,7 @@ class SFpyr(Spyr):
 
         if len(args) > 3:
             if args[3] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[3]
@@ -505,16 +509,16 @@ class SFpyr(Spyr):
         else:
             harmonics = numpy.array(range((nbands-1)/2)) * 2
 
-        steermtx = pyPyrUtils.steer2HarmMtx(harmonics, 
+        steermtx = pyPyrUtils.steer2HarmMtx(harmonics,
                                             numpy.pi*numpy.array(range(nbands))/nbands,
                                             'even')
         #------------------------------------------------------
-        
+
         dims = numpy.array(self.image.shape)
         ctr = numpy.ceil((numpy.array(dims)+0.5)/2)
-        
+
         (xramp, yramp) = numpy.meshgrid((numpy.array(range(1,dims[1]+1))-ctr[1])/
-                                     (dims[1]/2), 
+                                     (dims[1]/2),
                                      (numpy.array(range(1,dims[0]+1))-ctr[0])/
                                      (dims[0]/2))
         angle = numpy.arctan2(yramp, xramp)
@@ -527,7 +531,7 @@ class SFpyr(Spyr):
         Yrcos = numpy.sqrt(Yrcos)
 
         YIrcos = numpy.sqrt(1.0 - Yrcos**2)
-        lo0mask = pyPyrUtils.pointOp(log_rad, YIrcos, Xrcos[0], 
+        lo0mask = pyPyrUtils.pointOp(log_rad, YIrcos, Xrcos[0],
                                      Xrcos[1]-Xrcos[0], 0)
         numpy.array(lo0mask)
 
@@ -536,7 +540,7 @@ class SFpyr(Spyr):
         self.pyr = []
         self.pyrSize = []
 
-        hi0mask = pyPyrUtils.pointOp(log_rad, Yrcos, Xrcos[0], 
+        hi0mask = pyPyrUtils.pointOp(log_rad, Yrcos, Xrcos[0],
                                      Xrcos[1]-Xrcos[0], 0)
         hi0mask = numpy.array(hi0mask)
 
@@ -552,7 +556,7 @@ class SFpyr(Spyr):
         for i in range(ht):
             bands = numpy.zeros((lodft.shape[0]*lodft.shape[1], nbands))
             bind = numpy.zeros((nbands, 2))
-        
+
             Xrcos -= numpy.log2(2)
 
             lutsize = 1024
@@ -564,16 +568,16 @@ class SFpyr(Spyr):
             log_rad_test = numpy.reshape(log_rad,(1,
                                                   log_rad.shape[0]*
                                                   log_rad.shape[1]))
-            himask = pyPyrUtils.pointOp(log_rad_test, Yrcos, Xrcos[0], 
+            himask = pyPyrUtils.pointOp(log_rad_test, Yrcos, Xrcos[0],
                                         Xrcos[1]-Xrcos[0], 0)
             himask = numpy.array(himask)
-            himask = numpy.reshape(himask, 
+            himask = numpy.reshape(himask,
                                    (lodft.shape[0], lodft.shape[1]))
 
             for b in range(nbands):
-                angle_tmp = numpy.reshape(angle, 
+                angle_tmp = numpy.reshape(angle,
                                           (1,angle.shape[0]*angle.shape[1]))
-                anglemask = pyPyrUtils.pointOp(angle_tmp, Ycosn, 
+                anglemask = pyPyrUtils.pointOp(angle_tmp, Ycosn,
                                                Xcosn[0]+numpy.pi*b/nbands,
                                                Xcosn[1]-Xcosn[0],0)
                 anglemask = numpy.array(anglemask)
@@ -595,12 +599,12 @@ class SFpyr(Spyr):
             angle = angle[lostart[0]:loend[0], lostart[1]:loend[1]]
             lodft = lodft[lostart[0]:loend[0], lostart[1]:loend[1]]
             YIrcos = numpy.abs(numpy.sqrt(1.0 - Yrcos**2))
-            log_rad_tmp = numpy.reshape(log_rad, 
+            log_rad_tmp = numpy.reshape(log_rad,
                                         (1,log_rad.shape[0]*log_rad.shape[1]))
-            lomask = pyPyrUtils.pointOp(log_rad_tmp, YIrcos, Xrcos[0], 
+            lomask = pyPyrUtils.pointOp(log_rad_tmp, YIrcos, Xrcos[0],
                                         Xrcos[1]-Xrcos[0], 0)
             lomask = numpy.array(lomask)
-            
+
             lodft = lodft * lomask.reshape(lodft.shape[0], lodft.shape[1])
 
         lodft = numpy.fft.ifft2(numpy.fft.ifftshift(lodft))
@@ -613,7 +617,7 @@ class SFpyr(Spyr):
             return 0
         else:
             b = 2
-            while ( b <= len(self.pyrSize) and 
+            while ( b <= len(self.pyrSize) and
                     self.pyrSize[b] == self.pyrSize[1] ):
                 b += 1
             return b-1
@@ -626,7 +630,7 @@ class SFpyr(Spyr):
         return spHt
 
     def reconSFpyr(self, *args):
-        
+
         if len(args) > 0:
             levs = args[0]
         else:
@@ -639,7 +643,7 @@ class SFpyr(Spyr):
 
         if len(args) > 2:
             if args[2] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[2]
@@ -649,13 +653,13 @@ class SFpyr(Spyr):
         #-----------------------------------------------------------------
 
         nbands = self.numBands()
-        
+
         maxLev = 1 + self.spyrHt()
         if isinstance(levs, basestring) and levs == 'all':
             levs = numpy.array(range(maxLev+1))
         elif isinstance(levs, basestring):
-            print "Error: %s not valid for levs parameter." % (levs)
-            print "levs must be either a 1D numpy array or the string 'all'."
+            print("Error: %s not valid for levs parameter." % (levs))
+            print("levs must be either a 1D numpy array or the string 'all'.")
             return
         else:
             levs = numpy.array(levs)
@@ -663,8 +667,8 @@ class SFpyr(Spyr):
         if isinstance(bands, basestring) and bands == 'all':
             bands = numpy.array(range(nbands))
         elif isinstance(bands, basestring):
-            print "Error: %s not valid for bands parameter." % (bands)
-            print "bands must be either a 1D numpy array or the string 'all'."
+            print("Error: %s not valid for bands parameter." % (bands))
+            print("bands must be either a 1D numpy array or the string 'all'.")
             return
         else:
             bands = numpy.array(bands)
@@ -685,16 +689,16 @@ class SFpyr(Spyr):
             bounds = (lostart[0], lostart[1], loend[0], loend[1])
             if bounds not in boundList:
                 boundList.append( bounds )
-        boundList.append((0.0, 0.0, dimList[len(dimList)-1][0], 
+        boundList.append((0.0, 0.0, dimList[len(dimList)-1][0],
                           dimList[len(dimList)-1][1]))
         dimList.append((dimList[len(dimList)-1][0], dimList[len(dimList)-1][1]))
-        
+
         # matlab code starts here
         dims = numpy.array(self.pyrSize[0])
         ctr = numpy.ceil((dims+0.5)/2.0)
 
         (xramp, yramp) = numpy.meshgrid((numpy.array(range(1,dims[1]+1))-ctr[1])/
-                                     (dims[1]/2), 
+                                     (dims[1]/2),
                                      (numpy.array(range(1,dims[0]+1))-ctr[0])/
                                      (dims[0]/2))
         angle = numpy.arctan2(yramp, xramp)
@@ -710,7 +714,7 @@ class SFpyr(Spyr):
         # from reconSFpyrLevs
         lutsize = 1024
         Xcosn = numpy.pi * numpy.array(range(-(2*lutsize+1), (lutsize+2))) / lutsize
-        
+
         order = nbands -1
         const = (2**(2*order))*(scipy.misc.factorial(order, exact=True)**2)/float(nbands*scipy.misc.factorial(2*order, exact=True))
         Ycosn = numpy.sqrt(const) * (numpy.cos(Xcosn))**order
@@ -725,22 +729,22 @@ class SFpyr(Spyr):
 
         bounds = (0, 0, 0, 0)
         for idx in range(len(boundList)-2, 0, -1):
-            diff = (boundList[idx][2]-boundList[idx][0], 
+            diff = (boundList[idx][2]-boundList[idx][0],
                     boundList[idx][3]-boundList[idx][1])
-            bounds = (bounds[0]+boundList[idx][0], bounds[1]+boundList[idx][1], 
-                      bounds[0]+boundList[idx][0] + diff[0], 
+            bounds = (bounds[0]+boundList[idx][0], bounds[1]+boundList[idx][1],
+                      bounds[0]+boundList[idx][0] + diff[0],
                       bounds[1]+boundList[idx][1] + diff[1])
             Xrcos -= numpy.log2(2.0)
         nlog_rad = log_rad[bounds[0]:bounds[2], bounds[1]:bounds[3]]
 
-        nlog_rad_tmp = numpy.reshape(nlog_rad, 
+        nlog_rad_tmp = numpy.reshape(nlog_rad,
                                      (1,nlog_rad.shape[0]*nlog_rad.shape[1]))
-        lomask = pyPyrUtils.pointOp(nlog_rad_tmp, YIrcos, Xrcos[0], 
+        lomask = pyPyrUtils.pointOp(nlog_rad_tmp, YIrcos, Xrcos[0],
                                     Xrcos[1]-Xrcos[0], 0)
         lomask = numpy.array(lomask)
         lomask = lomask.reshape(nres.shape[0], nres.shape[1])
         lomask = lomask + 0j
-        resdft[boundList[1][0]:boundList[1][2], 
+        resdft[boundList[1][0]:boundList[1][2],
                boundList[1][1]:boundList[1][3]] = nresdft * lomask
 
         # middle bands
@@ -749,12 +753,12 @@ class SFpyr(Spyr):
             bounds1 = (0, 0, 0, 0)
             bounds2 = (0, 0, 0, 0)
             for boundIdx in range(len(boundList)-1,idx-1,-1):
-                diff = (boundList[boundIdx][2]-boundList[boundIdx][0], 
+                diff = (boundList[boundIdx][2]-boundList[boundIdx][0],
                         boundList[boundIdx][3]-boundList[boundIdx][1])
                 bound2tmp = bounds2
-                bounds2 = (bounds2[0]+boundList[boundIdx][0], 
+                bounds2 = (bounds2[0]+boundList[boundIdx][0],
                            bounds2[1]+boundList[boundIdx][1],
-                           bounds2[0]+boundList[boundIdx][0] + diff[0], 
+                           bounds2[0]+boundList[boundIdx][0] + diff[0],
                            bounds2[1]+boundList[boundIdx][1] + diff[1])
                 bounds1 = bound2tmp
             nlog_rad1=log_rad[bounds1[0]:bounds1[2], bounds1[1]:bounds1[3]]
@@ -764,7 +768,7 @@ class SFpyr(Spyr):
             YIrcos = numpy.abs(numpy.sqrt(1.0 - Yrcos**2))
             if idx > 1:
                 Xrcos += numpy.log2(2.0)
-                nlog_rad2_tmp = numpy.reshape(nlog_rad2, 
+                nlog_rad2_tmp = numpy.reshape(nlog_rad2,
                                               (1,nlog_rad2.shape[0]*
                                                nlog_rad2.shape[1]))
                 lomask = pyPyrUtils.pointOp(nlog_rad2_tmp, YIrcos,
@@ -775,7 +779,7 @@ class SFpyr(Spyr):
                                         bounds2[3]-bounds2[1])
                 lomask = lomask + 0j
                 nresdft = numpy.zeros(dimList[idx]) + 0j
-                nresdft[boundList[idx][0]:boundList[idx][2], 
+                nresdft[boundList[idx][0]:boundList[idx][2],
                         boundList[idx][1]:boundList[idx][3]] = resdft * lomask
                 resdft = nresdft.copy()
 
@@ -785,10 +789,10 @@ class SFpyr(Spyr):
             if idx != 0 and idx != len(boundList)-1:
                 for b in range(nbands):
                     if (bands == b).any():
-                        nlog_rad1_tmp = numpy.reshape(nlog_rad1, 
+                        nlog_rad1_tmp = numpy.reshape(nlog_rad1,
                                                       (1,nlog_rad1.shape[0]*
                                                        nlog_rad1.shape[1]))
-                        himask = pyPyrUtils.pointOp(nlog_rad1_tmp, Yrcos, 
+                        himask = pyPyrUtils.pointOp(nlog_rad1_tmp, Yrcos,
                                                     Xrcos[0], Xrcos[1]-Xrcos[0],
                                                     0)
 
@@ -796,7 +800,7 @@ class SFpyr(Spyr):
                         nangle_tmp = numpy.reshape(nangle, (1,
                                                             nangle.shape[0]*
                                                             nangle.shape[1]))
-                        anglemask = pyPyrUtils.pointOp(nangle_tmp, Ycosn, 
+                        anglemask = pyPyrUtils.pointOp(nangle_tmp, Ycosn,
                                                        Xcosn[0]+numpy.pi*
                                                        b/nbands,
                                                        Xcosn[1]-Xcosn[0], 0)
@@ -809,19 +813,19 @@ class SFpyr(Spyr):
                             banddft = numpy.fft.fftshift(numpy.fft.fft2(band))
                         else:
                             banddft = numpy.zeros(band.shape)
-                        resdft += ( (numpy.power(-1+0j,0.5))**(nbands-1) * 
+                        resdft += ( (numpy.power(-1+0j,0.5))**(nbands-1) *
                                     banddft * anglemask * himask )
                     bandIdx += 1
 
         # apply lo0mask
         Xrcos += numpy.log2(2.0)
-        lo0mask = pyPyrUtils.pointOp(log_rad, YIrcos, Xrcos[0], 
+        lo0mask = pyPyrUtils.pointOp(log_rad, YIrcos, Xrcos[0],
                                      Xrcos[1]-Xrcos[0], 0)
         lo0mask = numpy.array(lo0mask)
 
         lo0mask = lo0mask.reshape(dims[0], dims[1])
         resdft = resdft * lo0mask
-        
+
         # residual highpass subband
         hi0mask = pyPyrUtils.pointOp(log_rad, Yrcos, Xrcos[0], Xrcos[1]-Xrcos[0],
                                      0)
@@ -844,7 +848,7 @@ class SFpyr(Spyr):
 class SCFpyr(SFpyr):
     filt = ''
     edges = ''
-    
+
     #constructor
     def __init__(self, *args):    # (image, height, order, twidth)
         self.pyrType = 'steerableFrequency'
@@ -852,7 +856,7 @@ class SCFpyr(SFpyr):
         if len(args) > 0:
             self.image = args[0]
         else:
-            print "First argument (image) is required."
+            print("First argument (image) is required.")
             return
 
         #------------------------------------------------
@@ -861,15 +865,15 @@ class SCFpyr(SFpyr):
         max_ht = numpy.floor( numpy.log2( min(self.image.shape) ) ) - 2
         if len(args) > 1:
             if(args[1] > max_ht):
-                print "Error: cannot build pyramid higher than %d levels." % (max_ht)
+                print("Error: cannot build pyramid higher than %d levels." % (max_ht))
             ht = args[1]
         else:
             ht = max_ht
         ht = int(ht)
-            
+
         if len(args) > 2:
             if args[2] > 15 or args[2] < 0:
-                print "Warning: order must be an integer in the range [0,15]. Truncating."
+                print("Warning: order must be an integer in the range [0,15]. Truncating.")
                 order = min( max(args[2],0), 15 )
             else:
                 order = args[2]
@@ -880,7 +884,7 @@ class SCFpyr(SFpyr):
 
         if len(args) > 3:
             if args[3] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[3]
@@ -895,16 +899,16 @@ class SCFpyr(SFpyr):
         else:
             harmonics = numpy.array(range((nbands-1)/2)) * 2
 
-        steermtx = pyPyrUtils.steer2HarmMtx(harmonics, 
+        steermtx = pyPyrUtils.steer2HarmMtx(harmonics,
                                      numpy.pi*numpy.array(range(nbands))/nbands,
                                      'even')
         #------------------------------------------------------
-        
+
         dims = numpy.array(self.image.shape)
         ctr = numpy.ceil((numpy.array(dims)+0.5)/2)
-        
+
         (xramp, yramp) = numpy.meshgrid((numpy.array(range(1,dims[1]+1))-ctr[1])/
-                                     (dims[1]/2), 
+                                     (dims[1]/2),
                                      (numpy.array(range(1,dims[0]+1))-ctr[0])/
                                      (dims[0]/2))
         angle = numpy.arctan2(yramp, xramp)
@@ -942,7 +946,7 @@ class SCFpyr(SFpyr):
         for i in range(ht):
             bands = numpy.zeros((lodft.shape[0]*lodft.shape[1], nbands))
             bind = numpy.zeros((nbands, 2))
-        
+
             Xrcos -= numpy.log2(2)
 
             lutsize = 1024
@@ -952,20 +956,20 @@ class SCFpyr(SFpyr):
             const = (2**(2*order))*(scipy.misc.factorial(order, exact=True)**2)/float(nbands*scipy.misc.factorial(2*order, exact=True))
 
             alfa = ( (numpy.pi+Xcosn) % (2.0*numpy.pi) ) - numpy.pi
-            Ycosn = ( 2.0*numpy.sqrt(const) * (numpy.cos(Xcosn)**order) * 
+            Ycosn = ( 2.0*numpy.sqrt(const) * (numpy.cos(Xcosn)**order) *
                       (numpy.abs(alfa)<numpy.pi/2.0).astype(int) )
             log_rad_tmp = numpy.reshape(log_rad, (1,log_rad.shape[0]*
                                                   log_rad.shape[1]))
-            himask = pyPyrUtils.pointOp(log_rad_tmp, Yrcos, Xrcos[0], 
+            himask = pyPyrUtils.pointOp(log_rad_tmp, Yrcos, Xrcos[0],
                                         Xrcos[1]-Xrcos[0], 0)
             himask = numpy.array(himask)
-            
+
             himask = himask.reshape(lodft.shape[0], lodft.shape[1])
             for b in range(nbands):
-                angle_tmp = numpy.reshape(angle, 
+                angle_tmp = numpy.reshape(angle,
                                           (1,angle.shape[0]*angle.shape[1]))
-                anglemask = pyPyrUtils.pointOp(angle_tmp, Ycosn, 
-                                               Xcosn[0]+numpy.pi*b/nbands, 
+                anglemask = pyPyrUtils.pointOp(angle_tmp, Ycosn,
+                                               Xcosn[0]+numpy.pi*b/nbands,
                                                Xcosn[1]-Xcosn[0], 0)
                 anglemask = numpy.array(anglemask)
                 anglemask = anglemask.reshape(lodft.shape[0], lodft.shape[1])
@@ -985,9 +989,9 @@ class SCFpyr(SFpyr):
             angle = angle[lostart[0]:loend[0], lostart[1]:loend[1]]
             lodft = lodft[lostart[0]:loend[0], lostart[1]:loend[1]]
             YIrcos = numpy.abs(numpy.sqrt(1.0 - Yrcos**2))
-            log_rad_tmp = numpy.reshape(log_rad, 
+            log_rad_tmp = numpy.reshape(log_rad,
                                         (1,log_rad.shape[0]*log_rad.shape[1]))
-            lomask = pyPyrUtils.pointOp(log_rad_tmp, YIrcos, Xrcos[0], 
+            lomask = pyPyrUtils.pointOp(log_rad_tmp, YIrcos, Xrcos[0],
                                         Xrcos[1]-Xrcos[0], 0)
             lomask = numpy.array(lomask)
             lodft = lodft * lomask.reshape(lodft.shape[0], lodft.shape[1])
@@ -1010,7 +1014,7 @@ class SCFpyr(SFpyr):
 
         if len(args) > 2:
             if args[2] <= 0:
-                print "Warning: twidth must be positive. Setting to 1."
+                print("Warning: twidth must be positive. Setting to 1.")
                 twidth = 1
             else:
                 twidth = args[2]
@@ -1064,8 +1068,8 @@ class Lpyr(pyramid):
         if len(args) > 0:
             self.image = args[0]
         else:
-            print "pyr = Lpyr(image, height, filter1, filter2, edges)"
-            print "First argument (image) is required"
+            print("pyr = Lpyr(image, height, filter1, filter2, edges)")
+            print("First argument (image) is required")
             return
 
         if len(args) > 2:
@@ -1074,7 +1078,7 @@ class Lpyr(pyramid):
                 filt1 = pyPyrUtils.namedFilter(filt1)
             elif len(filt1.shape) != 1 and ( filt1.shape[0] != 1 and
                                              filt1.shape[1] != 1 ):
-                print "Error: filter1 should be a 1D filter (i.e., a vector)"
+                print("Error: filter1 should be a 1D filter (i.e., a vector)")
                 return
         else:
             filt1 = pyPyrUtils.namedFilter('binom5')
@@ -1089,7 +1093,7 @@ class Lpyr(pyramid):
                 filt2 = pyPyrUtils.namedFilter(filt2)
             elif len(filt2.shape) != 1 and ( filt2.shape[0] != 1 and
                                             filt2.shape[1] != 1 ):
-                print "Error: filter2 should be a 1D filter (i.e., a vector)"
+                print("Error: filter2 should be a 1D filter (i.e., a vector)")
                 return
         else:
             filt2 = filt1
@@ -1102,7 +1106,7 @@ class Lpyr(pyramid):
             else:
                 self.height = args[1]
                 if self.height > maxHeight:
-                    print ( "Error: cannot build pyramid higher than %d levels"
+                    print( "Error: cannot build pyramid higher than %d levels"
                             % (maxHeight) )
                     return
         else:
@@ -1143,7 +1147,7 @@ class Lpyr(pyramid):
                 lo2 = numpy.array(lo2)
 
             los[ht] = lo2
-                
+
             im = lo2
 
         # adjust shape if 1D if needed
@@ -1157,24 +1161,24 @@ class Lpyr(pyramid):
             im_sz = los[ht-1].shape
             filt2_sz = filt2.shape
             if len(im_sz) == 1 or im_sz[1] == 1:
-                hi2 = pyPyrUtils.upConv(image = im, filt = filt2.T, 
+                hi2 = pyPyrUtils.upConv(image = im, filt = filt2.T,
                                         edges = edges, step = (1,2),
                                         stop = (los[ht].shape[1],
                                                 los[ht].shape[0])).T
             elif im_sz[0] == 1:
-                hi2 = pyPyrUtils.upConv(image = im, filt = filt2.T, 
-                                        edges = edges, step = (2,1), 
+                hi2 = pyPyrUtils.upConv(image = im, filt = filt2.T,
+                                        edges = edges, step = (2,1),
                                         stop = (los[ht].shape[1],
                                                 los[ht].shape[0])).T
             else:
-                hi = pyPyrUtils.upConv(image = im, filt = filt2, 
-                                       edges = edges, step = (2,1), 
+                hi = pyPyrUtils.upConv(image = im, filt = filt2,
+                                       edges = edges, step = (2,1),
                                        stop = (los[ht].shape[0], im_sz[1]))
-                hi2 = pyPyrUtils.upConv(image = hi, filt = filt2.T, 
-                                        edges = edges, step = (1,2), 
-                                        stop = (los[ht].shape[0], 
+                hi2 = pyPyrUtils.upConv(image = hi, filt = filt2.T,
+                                        edges = edges, step = (1,2),
+                                        stop = (los[ht].shape[0],
                                                 los[ht].shape[1]))
-                                       
+
             hi2 = los[ht] - hi2
             self.pyr.insert(pyrCtr, hi2.copy())
             self.pyrSize.insert(pyrCtr, hi2.shape)
@@ -1192,17 +1196,17 @@ class Lpyr(pyramid):
     # set a pyramid value
     def set_old(self, *args):
         if len(args) != 3:
-            print 'Error: three input parameters required:'
-            print '  set(band, element, value)'
-        print 'band=%d  element=%d  value=%d' % (args[0],args[1],args[2])
-        print self.pyr[args[0]].shape
-        self.pyr[args[0]][args[1]] = args[2] 
+            print('Error: three input parameters required:')
+            print('  set(band, element, value)')
+        print('band=%d  element=%d  value=%d' % (args[0],args[1],args[2]))
+        print(self.pyr[args[0]].shape)
+        self.pyr[args[0]][args[1]] = args[2]
 
     def set(self, *args):
         if len(args) != 3:
-            print 'Error: three input parameters required:'
-            print '  set(band, element(tuple), value)'
-        self.pyr[args[0]][args[1][0]][args[1][1]] = args[2] 
+            print('Error: three input parameters required:')
+            print('  set(band, element(tuple), value)')
+        self.pyr[args[0]][args[1][0]][args[1][1]] = args[2]
 
     def reconPyr(self, *args):
         if len(args) > 0:
@@ -1226,8 +1230,8 @@ class Lpyr(pyramid):
             levs = range(0,maxLev)
         else:
             if (levs > maxLev-1).any():
-                print ( "Error: level numbers must be in the range [0, %d]." % 
-                        (maxLev-1) )
+                print("Error: level numbers must be in the range [0, %d]." %
+                      (maxLev-1))
                 return
 
         if isinstance(filt2, basestring):
@@ -1247,17 +1251,17 @@ class Lpyr(pyramid):
                 filt2_sz = filt2.shape
                 if res_sz[0] == 1:
                     hi2 = pyPyrUtils.upConv(image = res, filt = filt2,
-                                            edges = edges, step = (2,1), 
+                                            edges = edges, step = (2,1),
                                             stop = (new_sz[1], new_sz[0])).T
                 elif res_sz[1] == 1:
                     hi2 = pyPyrUtils.upConv(image = res, filt = filt2.T,
-                                            edges = edges, step = (1,2), 
+                                            edges = edges, step = (1,2),
                                             stop = (new_sz[1], new_sz[0])).T
                 else:
-                    hi = pyPyrUtils.upConv(image = res, filt = filt2, 
-                                           edges = edges, step = (2,1), 
+                    hi = pyPyrUtils.upConv(image = res, filt = filt2,
+                                           edges = edges, step = (2,1),
                                            stop = (new_sz[0], res_sz[1]))
-                    hi2 = pyPyrUtils.upConv(image = hi, filt = filt2.T, 
+                    hi2 = pyPyrUtils.upConv(image = hi, filt = filt2.T,
                                             edges = edges, step = (1,2),
                                             stop = (new_sz[0], new_sz[1]))
                 if lev in levs:
@@ -1266,8 +1270,8 @@ class Lpyr(pyramid):
                     res = hi2 + bandIm
                 else:
                     res = hi2
-        return res                           
-                
+        return res
+
     def pyrLow(self):
         return numpy.array(self.band(self.height-1))
 
@@ -1290,7 +1294,7 @@ class Lpyr(pyramid):
             scale = 2
 
         nind = self.height
-            
+
         # auto range calculations
         if pRange == 'auto1':
             pRange = numpy.zeros((nind,1))
@@ -1355,13 +1359,13 @@ class Lpyr(pyramid):
             stdev = numpy.std(band)
             pRange[nind,:] = numpy.array([av-2*stdev, av+2*stdev])
         elif isinstance(pRange, basestring):
-            print "Error: band range argument: %s" % (pRange)
+            print("Error: band range argument: %s" % (pRange))
             return
         elif pRange.shape[0] == 1 and pRange.shape[1] == 2:
             scales = numpy.power( numpy.array( range(0,nind) ), scale)
             pRange = numpy.outer( scales, pRange )
             band = self.pyrLow()
-            pRange[nind,:] = ( pRange[nind,:] + numpy.mean(band) - 
+            pRange[nind,:] = ( pRange[nind,:] + numpy.mean(band) -
                                numpy.mean(pRange[nind,:]) )
 
         # draw
@@ -1378,7 +1382,7 @@ class Lpyr(pyramid):
             #ax0.get_yaxis().set_visible(False)
             #for bnum in range(0,nind):
             #    pylab.subplot(nind, 1, bnum+1)
-            #    pylab.plot(numpy.array(range(numpy.amax(self.band(bnum).shape))).T, 
+            #    pylab.plot(numpy.array(range(numpy.amax(self.band(bnum).shape))).T,
             #               self.band(bnum).T)
             #    ylim(pRange[bnum,:])
             #    xlim((0,self.band(bnum).shape[1]-1))
@@ -1395,14 +1399,14 @@ class Lpyr(pyramid):
             for bnum in range(nind):
                 prevsz = sz
                 sz = self.band(bnum).shape
-                
+
                 # determine center position of new band:
-                ctr = ( ctr + gap*dirr/2.0 + dirr * 
+                ctr = ( ctr + gap*dirr/2.0 + dirr *
                         numpy.floor( (prevsz+(dirr<0).astype(int))/2.0 ) )
                 dirr = numpy.dot(dirr,numpy.array([ [0, -1], [1, 0] ])) # ccw rotation
-                ctr = ( ctr + gap*dirr/2 + dirr * 
+                ctr = ( ctr + gap*dirr/2 + dirr *
                         numpy.floor( (sz+(dirr<0).astype(int)) / 2.0) )
-                llpos[bnum,:] = ctr - numpy.floor(numpy.array(sz))/2.0 
+                llpos[bnum,:] = ctr - numpy.floor(numpy.array(sz))/2.0
             # make position list positive, and allocate appropriate image
             llpos = llpos - numpy.ones((nind,1))*numpy.min(llpos)
             pind = range(self.height)
@@ -1410,14 +1414,14 @@ class Lpyr(pyramid):
                 pind[i] = self.band(i).shape
             urpos = llpos + pind
             d_im = numpy.ones((numpy.max(urpos), numpy.max(urpos))) * 255
-            
+
             # paste bands into image, (im-r1)*(nshades-1)/(r2-r1) + 1.5
             nshades = 256
             for bnum in range(nind):
                 mult = (nshades-1) / (pRange[bnum,1]-pRange[bnum,0])
                 d_im[llpos[bnum,0]:urpos[bnum,0], llpos[bnum,1]:urpos[bnum,1]]=(
                     mult*self.band(bnum) + (1.5-mult*pRange[bnum,0]) )
-            
+
             # FIX: need a mode to switch between above and below display
             if disp == 'nb':
                 JBhelpers.showIm(d_im[:self.band(0).shape[0]][:])
@@ -1433,8 +1437,8 @@ class Gpyr(Lpyr):
     def __init__(self, *args):    # (image, height, filter, edges)
         self.pyrType = 'Gaussian'
         if len(args) < 1:
-            print "pyr = Gpyr(image, height, filter, edges)"
-            print "First argument (image) is required"
+            print("pyr = Gpyr(image, height, filter, edges)")
+            print("First argument (image) is required")
             return
         else:
             self.image = args[0]
@@ -1442,10 +1446,10 @@ class Gpyr(Lpyr):
         if len(args) > 2:
             filt = args[2]
             if not (filt.shape == 1).any():
-                print "Error: filt should be a 1D filter (i.e., a vector)"
+                print("Error: filt should be a 1D filter (i.e., a vector)")
                 return
         else:
-            print "no filter set, so filter is binom5"
+            print("no filter set, so filter is binom5")
             filt = pyPyrUtils.namedFilter('binom5')
             if self.image.shape[0] == 1:
                 filt = filt.reshape(1,5)
@@ -1460,7 +1464,7 @@ class Gpyr(Lpyr):
             else:
                 self.height = args[1]
                 if self.height > maxHeight:
-                    print ( "Error: cannot build pyramid higher than %d levels"
+                    print("Error: cannot build pyramid higher than %d levels"
                             % (maxHeight) )
                     return
         else:
@@ -1494,19 +1498,19 @@ class Gpyr(Lpyr):
                 lo2 = pyPyrUtils.corrDn(image = im, filt = filt, step = (2,1))
                 lo2 = numpy.array(lo2)
             else:
-                lo = pyPyrUtils.corrDn(image = im, filt = filt.T, 
+                lo = pyPyrUtils.corrDn(image = im, filt = filt.T,
                                        step = (1,2), start = (0,0))
                 lo = numpy.array(lo)
-                lo2 = pyPyrUtils.corrDn(image = lo, filt = filt, 
+                lo2 = pyPyrUtils.corrDn(image = lo, filt = filt,
                                         step = (2,1), start = (0,0))
-                lo2 = numpy.array(lo2)                
+                lo2 = numpy.array(lo2)
 
             self.pyr.append(lo2.copy())
             self.pyrSize.append(lo2.shape)
             pyrCtr += 1
 
             im = lo2
-        
+
 class Wpyr(Lpyr):
     filt = ''
     edges = ''
@@ -1521,7 +1525,7 @@ class Wpyr(Lpyr):
         if len(args) > 0:
             im = args[0]
         else:
-            print "First argument (image) is required."
+            print("First argument (image) is required.")
             return
 
         #------------------------------------------------
@@ -1535,7 +1539,7 @@ class Wpyr(Lpyr):
             filt = pyPyrUtils.namedFilter(filt)
 
         if len(filt.shape) != 1 and filt.shape[0] != 1 and filt.shape[1] != 1:
-            print "Error: filter should be 1D (i.e., a vector)";
+            print("Error: filter should be 1D (i.e., a vector)")
             return
         hfilt = pyPyrUtils.modulateFlip(filt)
         #hfilt = pyPyrUtils.modulateFlip(filt).T
@@ -1565,53 +1569,53 @@ class Wpyr(Lpyr):
             if ht == 'auto':
                 ht = max_ht
             elif(ht > max_ht):
-                print "Error: cannot build pyramid higher than %d levels." % (max_ht)
+                print("Error: cannot build pyramid higher than %d levels." % (max_ht))
         else:
             ht = max_ht
         ht = int(ht)
         self.height = ht + 1  # used with showPyr() method
         for lev in range(ht):
             if len(im.shape) == 1 or im.shape[1] == 1:
-                lolo = pyPyrUtils.corrDn(image = im, filt = filt, 
-                                         edges = edges, step = (2,1), 
+                lolo = pyPyrUtils.corrDn(image = im, filt = filt,
+                                         edges = edges, step = (2,1),
                                          start = (stag-1,0))
                 lolo = numpy.array(lolo)
-                hihi = pyPyrUtils.corrDn(image = im, filt = hfilt, 
-                                         edges = edges, step = (2,1), 
+                hihi = pyPyrUtils.corrDn(image = im, filt = hfilt,
+                                         edges = edges, step = (2,1),
                                          start = (1, 0))
                 hihi = numpy.array(hihi)
             elif im.shape[0] == 1:
-                lolo = pyPyrUtils.corrDn(image = im, filt = filt, 
-                                              edges = edges, step = (1,2), 
+                lolo = pyPyrUtils.corrDn(image = im, filt = filt,
+                                              edges = edges, step = (1,2),
                                               start = (0, stag-1))
                 lolo = numpy.array(lolo)
-                hihi = pyPyrUtils.corrDn(image = im, filt = hfilt.T, 
-                                              edges = edges, step = (1,2), 
+                hihi = pyPyrUtils.corrDn(image = im, filt = hfilt.T,
+                                              edges = edges, step = (1,2),
                                               start = (0,1))
                 hihi = numpy.array(hihi)
             else:
-                lo = pyPyrUtils.corrDn(image = im, filt = filt, 
-                                       edges = edges, step = (2,1), 
+                lo = pyPyrUtils.corrDn(image = im, filt = filt,
+                                       edges = edges, step = (2,1),
                                        start = (stag-1,0))
                 lo = numpy.array(lo)
-                hi = pyPyrUtils.corrDn(image = im, filt = hfilt, 
-                                       edges = edges, step = (2,1), 
+                hi = pyPyrUtils.corrDn(image = im, filt = hfilt,
+                                       edges = edges, step = (2,1),
                                        start = (1,0))
                 hi = numpy.array(hi)
-                lolo = pyPyrUtils.corrDn(image = lo, filt = filt.T, 
-                                         edges = edges, step = (1,2), 
+                lolo = pyPyrUtils.corrDn(image = lo, filt = filt.T,
+                                         edges = edges, step = (1,2),
                                          start = (0, stag-1))
                 lolo = numpy.array(lolo)
-                lohi = pyPyrUtils.corrDn(image = hi, filt = filt.T, 
+                lohi = pyPyrUtils.corrDn(image = hi, filt = filt.T,
                                          edges = edges, step = (1,2),
                                          start = (0,stag-1))
                 lohi = numpy.array(lohi)
-                hilo = pyPyrUtils.corrDn(image = lo, filt = hfilt.T, 
-                                         edges = edges, step = (1,2), 
+                hilo = pyPyrUtils.corrDn(image = lo, filt = hfilt.T,
+                                         edges = edges, step = (1,2),
                                          start = (0,1))
                 hilo = numpy.array(hilo)
-                hihi = pyPyrUtils.corrDn(image = hi, filt = hfilt.T, 
-                                         edges = edges, step = (1,2), 
+                hihi = pyPyrUtils.corrDn(image = hi, filt = hfilt.T,
+                                         edges = edges, step = (1,2),
                                          start = (0,1))
                 hihi = numpy.array(hihi)
 
@@ -1632,8 +1636,8 @@ class Wpyr(Lpyr):
     # methods
 
     def wpyrHt(self):
-        if ( len(self.pyrSize[0]) == 1 or self.pyrSize[0][0] == 1 or 
-             self.pyrSize[0][1] == 1 ): 
+        if ( len(self.pyrSize[0]) == 1 or self.pyrSize[0][0] == 1 or
+             self.pyrSize[0][1] == 1 ):
             nbands = 1
         else:
             nbands = 3
@@ -1643,8 +1647,8 @@ class Wpyr(Lpyr):
         return ht
 
     def numBands(self):
-        if ( len(self.pyrSize[0]) == 1 or self.pyrSize[0][0] == 1 or 
-             self.pyrSize[0][1] == 1 ): 
+        if ( len(self.pyrSize[0]) == 1 or self.pyrSize[0][0] == 1 or
+             self.pyrSize[0][1] == 1 ):
             nbands = 1
         else:
             nbands = 3
@@ -1657,7 +1661,7 @@ class Wpyr(Lpyr):
             filt = args[0]
         else:
             filt = 'qmf9'
-            
+
         if len(args) > 1:
             edges = args[1]
         else:
@@ -1685,11 +1689,11 @@ class Wpyr(Lpyr):
                 tmpLevs.append((maxLev-1)-l)
             levs = numpy.array(tmpLevs)
             if (levs > maxLev).any():
-                print "Error: level numbers must be in the range [0, %d]" % (maxLev)
+                print("Error: level numbers must be in the range [0, %d]" % (maxLev))
         allLevs = numpy.array(range(maxLev))
 
         if bands == "all":
-            if ( len(self.band(0)) == 1 or self.band(0).shape[0] == 1 or 
+            if ( len(self.band(0)) == 1 or self.band(0).shape[0] == 1 or
                  self.band(0).shape[1] == 1 ):
                 bands = numpy.array([0]);
             else:
@@ -1697,8 +1701,8 @@ class Wpyr(Lpyr):
         else:
             bands = numpy.array(bands)
             if (bands < 0).any() or (bands > 2).any():
-                print "Error: band numbers must be in the range [0,2]."
-        
+                print("Error: band numbers must be in the range [0,2].")
+
         if isinstance(filt, basestring):
             filt = pyPyrUtils.namedFilter(filt)
 
@@ -1745,7 +1749,7 @@ class Wpyr(Lpyr):
                 if res_sz[0] == 1:
                     res = pyPyrUtils.upConv(image = imageIn, filt = filt.T,
                                             edges = edges, step = (1,2),
-                                            start = (0,stag-1), 
+                                            start = (0,stag-1),
                                             stop = res_sz).T
                     res = numpy.array(res)
                 elif res_sz[1] == 1:
@@ -1756,12 +1760,12 @@ class Wpyr(Lpyr):
                 else:
                     ires = pyPyrUtils.upConv(image = imageIn, filt = filt.T,
                                              edges = edges, step = (1,2),
-                                             start = (0,stag-1), 
+                                             start = (0,stag-1),
                                              stop = lres_sz)
                     ires = numpy.array(ires)
                     res = pyPyrUtils.upConv(image = ires, filt = filt,
-                                            edges = edges, step = (2,1), 
-                                            start = (stag-1,0), 
+                                            edges = edges, step = (2,1),
+                                            start = (stag-1,0),
                                             stop = res_sz)
                     res = numpy.array(res)
 
@@ -1772,14 +1776,14 @@ class Wpyr(Lpyr):
                     idx = resIdx - 1
 
                 if res_sz[0] ==1 and lev in levs:
-                    res = pyPyrUtils.upConv(image = self.band(idx), 
+                    res = pyPyrUtils.upConv(image = self.band(idx),
                                             filt = hfilt, edges = edges,
                                             step = (1,2), start = (0,1),
                                             stop = res_sz, result = res)
                     res = numpy.array(res)
                     idx -= 1
                 elif res_sz[1] == 1 and lev in levs:
-                    res = pyPyrUtils.upConv(image = self.band(idx), 
+                    res = pyPyrUtils.upConv(image = self.band(idx),
                                             filt = hfilt.T, edges = edges,
                                             step = (2,1), start = (1,0),
                                             stop = res_sz, result = res)
@@ -1789,17 +1793,17 @@ class Wpyr(Lpyr):
                     res_test = res
                     if 0 in bands and lev in levs:
                         ires = pyPyrUtils.upConv(image = self.band(idx),
-                                                 filt = filt.T, 
+                                                 filt = filt.T,
                                                  edges = edges,
-                                                 step = (1,2), 
-                                                 start = (0, stag-1), 
+                                                 step = (1,2),
+                                                 start = (0, stag-1),
                                                  stop = hres_sz)
                         ires = numpy.array(ires)
-                        res = pyPyrUtils.upConv(image = ires, 
-                                                filt = hfilt.T, 
+                        res = pyPyrUtils.upConv(image = ires,
+                                                filt = hfilt.T,
                                                 edges = edges,
                                                 step = (2,1),
-                                                start = (1,0), 
+                                                start = (1,0),
                                                 stop = (res_sz[0],
                                                         res_sz[1]),
                                                 result = res)
@@ -1807,35 +1811,35 @@ class Wpyr(Lpyr):
                     idx += 1
                     if 1 in bands and lev in levs:
                         ires = pyPyrUtils.upConv(image = self.band(idx),
-                                                 filt = hfilt, 
+                                                 filt = hfilt,
                                                  edges = edges,
-                                                 step = (1,2), 
+                                                 step = (1,2),
                                                  start = (0,1),
                                                  stop = lres_sz)
                         ires = numpy.array(ires)
-                        res = pyPyrUtils.upConv(image = ires, 
+                        res = pyPyrUtils.upConv(image = ires,
                                                 filt = filt,
-                                                edges = edges, 
+                                                edges = edges,
                                                 step = (2,1),
-                                                start = (stag-1,0), 
-                                                stop = (res_sz[0],res_sz[1]), 
+                                                start = (stag-1,0),
+                                                stop = (res_sz[0],res_sz[1]),
                                                 result = res)
                         res = numpy.array(res)
                     idx += 1
                     if 2 in bands and lev in levs:
                         ires = pyPyrUtils.upConv(image = self.band(idx),
-                                                 filt = hfilt, 
+                                                 filt = hfilt,
                                                  edges = edges,
-                                                 step = (1,2), 
+                                                 step = (1,2),
                                                  start = (0,1),
                                                  stop = (hres_sz[0],
                                                          hres_sz[1]))
                         ires = numpy.array(ires)
-                        res = pyPyrUtils.upConv(image = ires, 
+                        res = pyPyrUtils.upConv(image = ires,
                                                 filt = hfilt.T,
-                                                edges = edges, 
+                                                edges = edges,
                                                 step = (2,1),
-                                                start = (1,0), 
+                                                start = (1,0),
                                                 stop = (res_sz[0],
                                                         res_sz[1]),
                                                 result = res)
@@ -1854,29 +1858,29 @@ class Wpyr(Lpyr):
     #        print 'Error: three input parameters required:'
     #        print '  set(band, location, value)'
     #        print '  where band and value are integer and location is a tuple'
-    #    self.pyr[args[0]][args[1][0]][args[1][1]] = args[2] 
+    #    self.pyr[args[0]][args[1][0]][args[1][1]] = args[2]
 
     def set(self, *args):
         if len(args) != 3:
-            print 'Error: three input parameters required:'
-            print '  set(band, location, value)'
-            print '  where band and value are integer and location is a tuple'
+            print('Error: three input parameters required:')
+            print('  set(band, location, value)')
+            print('  where band and value are integer and location is a tuple')
         if isinstance(args[1], (int, long)):
             self.pyr[args[0]][0][args[1]] = args[2]
         elif isinstance(args[1], tuple):
-            self.pyr[args[0]][args[1][0]][args[1][1]] = args[2] 
+            self.pyr[args[0]][args[1][0]][args[1][1]] = args[2]
         else:
-            print 'Error: location parameter must be int or tuple!'
+            print('Error: location parameter must be int or tuple!')
             return
-            
+
 
     def set1D(self, *args):
         if len(args) != 3:
-            print 'Error: three input parameters required:'
-            print '  set(band, location, value)'
-            print '  where band and value are integer and location is a tuple'
-        print '%d %d %d' % (args[0], args[1], args[2])
-        print self.pyr[args[0]][0][1]
+            print('Error: three input parameters required:')
+            print('  set(band, location, value)')
+            print('  where band and value are integer and location is a tuple')
+        print('%d %d %d' % (args[0], args[1], args[2]))
+        print(self.pyr[args[0]][0][1])
 
     def pyrLow(self):
         return numpy.array(self.band(len(self.pyrSize)-1))
@@ -1897,7 +1901,7 @@ class Wpyr(Lpyr):
             scale = numpy.sqrt(2)
         elif scale == None and nbands == 3:
             scale = 2
-        
+
         ht = int(self.wpyrHt())
         nind = len(self.pyr)
 
@@ -1968,7 +1972,7 @@ class Wpyr(Lpyr):
             stdev = numpy.sqrt( numpy.var(band) )
             prange[nind-1,:] = numpy.array([av-2*stdev, av+2*stdev])
         elif isinstance(prange, basestring):
-            print "Error:Bad RANGE argument: %s'" % (prange)
+            print("Error:Bad RANGE argument: %s'" % (prange))
         elif prange.shape[0] == 1 and prange.shape[1] == 2:
             scales = numpy.power(scale, range(ht))
             scales = numpy.outer( numpy.ones((nbands,1)), scales )
@@ -2005,19 +2009,19 @@ class Wpyr(Lpyr):
                 ypos = self.pyrSize[ind1+1][0] + 1 + gap*(ht-lnum+1);
                 llpos[ind1:ind1+3, :] = [[ypos, 1], [1, xpos], [ypos, xpos]]
             llpos[nind-1,:] = [1, 1]   # lowpass
-    
+
             # make position list positive, and allocate appropriate image:
             llpos = llpos - ((numpy.ones((nind,1)) * numpy.amin(llpos, axis=0)) + 1) + 1
             urpos = llpos + self.pyrSize
             d_im = numpy.ones((numpy.amax(urpos), numpy.amax(urpos))) * bg
-        
+
             # paste bands into image, (im-r1)*(nshades-1)/(r2-r1) + 1.5
             nshades = 64;
             for bnum in range(nind):
                 mult = (nshades-1) / (prange[bnum,1]-prange[bnum,0])
-                d_im[llpos[bnum,0]:urpos[bnum,0], 
+                d_im[llpos[bnum,0]:urpos[bnum,0],
                      llpos[bnum,1]:urpos[bnum,1]] = mult * self.band(bnum) + (1.5-mult*prange[bnum,0])
-            
+
             if disp == 'qt':
                 pyPyrUtils.showIm(d_im, 'auto', 2)
             elif disp == 'nb':

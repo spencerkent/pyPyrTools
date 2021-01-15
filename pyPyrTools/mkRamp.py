@@ -5,21 +5,21 @@ def mkRamp(*args):
     ''' mkRamp(SIZE, DIRECTION, SLOPE, INTERCEPT, ORIGIN)
         Compute a matrix of dimension SIZE (a [Y X] 2-vector, or a scalar)
         containing samples of a ramp function, with given gradient DIRECTION
-        (radians, CW from X-axis, default = 0), SLOPE (per pixel, default = 
+        (radians, CW from X-axis, default = 0), SLOPE (per pixel, default =
         1), and a value of INTERCEPT (default = 0) at the ORIGIN (default =
         (size+1)/2, [1 1] = upper left). All but the first argument are
         optional '''
-    
+
     if len(args) == 0:
-        print "mkRamp(SIZE, DIRECTION, SLOPE, INTERCEPT, ORIGIN)"
-        print "first argument is required"
+        print("mkRamp(SIZE, DIRECTION, SLOPE, INTERCEPT, ORIGIN)")
+        print("first argument is required")
         exit(1)
     else:
         sz = args[0]
         if isinstance(sz, (int)):
             sz = (sz, sz)
         elif not isinstance(sz, (tuple)):
-            print "first argument must be a two element tuple or an integer"
+            print("first argument must be a two element tuple or an integer")
             exit(1)
 
     # OPTIONAL args:

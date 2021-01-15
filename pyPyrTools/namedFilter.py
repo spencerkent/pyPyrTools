@@ -3,27 +3,27 @@ import math
 import numpy
 
 def namedFilter(name):
-    ''' Some standard 1D filter kernels. These are scaled such that their 
+    ''' Some standard 1D filter kernels. These are scaled such that their
         L2-norm is 1.0
 
         binomN              - binomial coefficient filter of order N-1
         haar                - Harr wavelet
         qmf8, qmf12, qmf16  - Symmetric Quadrature Mirror Filters [Johnston80]
         daub2, daub3, daub4 - Daubechies wavelet [Daubechies88]
-        qmf5, qmf9, qmf13   - Symmetric Quadrature Mirror Filters 
+        qmf5, qmf9, qmf13   - Symmetric Quadrature Mirror Filters
                               [Simoncelli88, Simoncelli90]
-        [Johnston80] - J D Johnston, "A filter family designed for use in 
-                       quadrature mirror filter banks", Proc. ICASSP, 
+        [Johnston80] - J D Johnston, "A filter family designed for use in
+                       quadrature mirror filter banks", Proc. ICASSP,
                        pp 291-294, 1980.
-        [Daubechies88] - I Daubechies, "Orthonormal bases of compactly 
+        [Daubechies88] - I Daubechies, "Orthonormal bases of compactly
                          supported wavelets", Commun. Pure Appl. Math, vol. 42,
                          pp 909-996, 1988.
-        [Simoncelli88] - E P Simoncelli,  "Orthogonal sub-band image 
-                         transforms", PhD Thesis, MIT Dept. of Elec. Eng. and 
-                         Comp. Sci. May 1988. Also available as: MIT Media 
+        [Simoncelli88] - E P Simoncelli,  "Orthogonal sub-band image
+                         transforms", PhD Thesis, MIT Dept. of Elec. Eng. and
+                         Comp. Sci. May 1988. Also available as: MIT Media
                          Laboratory Vision and Modeling Technical Report #100.
-        [Simoncelli90] -  E P Simoncelli and E H Adelson, "Subband image 
-                          coding", Subband Transforms, chapter 4, ed. John W 
+        [Simoncelli90] -  E P Simoncelli and E H Adelson, "Subband image
+                          coding", Subband Transforms, chapter 4, ed. John W
                           Woods, Kluwer Academic Publishers,  Norwell, MA, 1990,
                           pp 143--192.   '''
 
@@ -54,7 +54,7 @@ def namedFilter(name):
     elif name is "gauss3":  # for backward-compatibility
         kernel = math.sqrt(2) * numpy.array([[0.25], [0.5], [0.25]])
     else:
-        print "Error: Bad filter name: %s" % (name)
+        print("Error: Bad filter name: %s" % (name))
         exit(1)
 
     return numpy.array(kernel)

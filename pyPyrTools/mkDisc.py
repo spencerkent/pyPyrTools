@@ -8,25 +8,25 @@ def mkDisc(*args):
     ''' IM = mkDisc(SIZE, RADIUS, ORIGIN, TWIDTH, VALS)
 
         Make a "disk" image.  SIZE specifies the matrix size, as for
-        zeros().  RADIUS (default = min(size)/4) specifies the radius of 
-        the disk.  ORIGIN (default = (size+1)/2) specifies the 
-        location of the disk center.  TWIDTH (in pixels, default = 2) 
+        zeros().  RADIUS (default = min(size)/4) specifies the radius of
+        the disk.  ORIGIN (default = (size+1)/2) specifies the
+        location of the disk center.  TWIDTH (in pixels, default = 2)
         specifies the width over which a soft threshold transition is made.
         VALS (default = [0,1]) should be a 2-vector containing the
-        intensity value inside and outside the disk.  
+        intensity value inside and outside the disk.
 
         Eero Simoncelli, 6/96. Python port by Rob Young, 7/15.  '''
 
     if len(args) == 0:
-        print "mkDisc(SIZE, RADIUS, ORIGIN, TWIDTH, VALS)"
-        print "first argument is required"
+        print("mkDisc(SIZE, RADIUS, ORIGIN, TWIDTH, VALS)")
+        print("first argument is required")
         exit(1)
     else:
         sz = args[0]
         if isinstance(sz, (int)):
             sz = (sz, sz)
         elif not isinstance(sz, (tuple)):
-            print "first argument must be a two element tuple or an integer"
+            print("first argument must be a two element tuple or an integer")
             exit(1)
 
     # OPTIONAL args:
@@ -45,7 +45,7 @@ def mkDisc(*args):
         twidth = args[3]
     else:
         twidth = twidth = 2
-        
+
     if len(args) > 4:
         vals = args[4]
     else:

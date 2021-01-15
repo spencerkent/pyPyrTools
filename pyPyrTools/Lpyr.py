@@ -68,7 +68,7 @@ class Lpyr(pyramid):
 
         self.filter1 = filter1
         self.filter2 = filter2
-        
+
         maxHeight = 1 + maxPyrHt(self.image.shape, filter1.shape)
 
         if isinstance(height, basestring) and height == "auto":
@@ -108,7 +108,7 @@ class Lpyr(pyramid):
                 #lo2 = numpy.array(lo2)
 
             los[ht] = lo2
-                
+
             im = lo2
 
         # adjust shape if 1D if needed
@@ -133,9 +133,9 @@ class Lpyr(pyramid):
                 hi = upConv(image = im, filt = filter2, edges = edges,
                             step = (2,1), stop = (los[ht].shape[0], im_sz[1]))
                 hi2 = upConv(image = hi, filt = filter2.T, edges = edges,
-                             step = (1,2), stop = (los[ht].shape[0], 
+                             step = (1,2), stop = (los[ht].shape[0],
                                                    los[ht].shape[1]))
-                                       
+
             hi2 = los[ht] - hi2
             self.pyr.insert(pyrCtr, hi2.copy())
             self.pyrSize.insert(pyrCtr, hi2.shape)
@@ -216,8 +216,8 @@ class Lpyr(pyramid):
                     res = hi2 + bandIm
                 else:
                     res = hi2
-        return res                           
-                
+        return res
+
     def pyrLow(self):
         return numpy.array(self.band(self.height-1))
 
@@ -240,7 +240,7 @@ class Lpyr(pyramid):
             scale = 2
 
         nind = self.height
-            
+
         # auto range calculations
         if pRange == 'auto1':
             pRange = numpy.zeros((nind,1))
@@ -305,13 +305,13 @@ class Lpyr(pyramid):
             stdev = numpy.std(band)
             pRange[nind,:] = numpy.array([av-2*stdev, av+2*stdev])
         elif isinstance(pRange, basestring):
-            print "Error: band range argument: %s" % (pRange)
+            print("Error: band range argument: %s" % (pRange))
             return
         elif pRange.shape[0] == 1 and pRange.shape[1] == 2:
             scales = numpy.power( numpy.array( range(0,nind) ), scale)
             pRange = numpy.outer( scales, pRange )
             band = self.pyrLow()
-            pRange[nind,:] = ( pRange[nind,:] + numpy.mean(band) - 
+            pRange[nind,:] = ( pRange[nind,:] + numpy.mean(band) -
                                numpy.mean(pRange[nind,:]) )
 
         # draw
@@ -329,7 +329,7 @@ class Lpyr(pyramid):
             #ax0.get_yaxis().set_visible(False)
             #for bnum in range(0,nind):
             #    pylab.subplot(nind, 1, bnum+1)
-            #    pylab.plot(numpy.array(range(numpy.amax(self.band(bnum).shape))).T, 
+            #    pylab.plot(numpy.array(range(numpy.amax(self.band(bnum).shape))).T,
             #               self.band(bnum).T)
             #    ylim(pRange[bnum,:])
             #    xlim((0,self.band(bnum).shape[1]-1))
@@ -346,12 +346,12 @@ class Lpyr(pyramid):
             for bnum in range(nind):
                 prevsz = sz
                 sz = self.band(bnum).shape
-                
+
                 # determine center position of new band:
-                ctr = ( ctr + gap*dirr/2.0 + dirr * 
+                ctr = ( ctr + gap*dirr/2.0 + dirr *
                         numpy.floor( (prevsz+(dirr<0).astype(int))/2.0 ) )
                 dirr = numpy.dot(dirr,numpy.array([ [0, -1], [1, 0] ])) # ccw rotation
-                ctr = ( ctr + gap*dirr/2 + dirr * 
+                ctr = ( ctr + gap*dirr/2 + dirr *
                         numpy.floor( (sz+(dirr<0).astype(int)) / 2.0) )
                 llpos[bnum,:] = ctr - numpy.floor(numpy.array(sz))/2.0
             # make position list positive, and allocate appropriate image
@@ -363,14 +363,14 @@ class Lpyr(pyramid):
                 pind[i] = self.band(i).shape
             urpos = llpos + pind
             d_im = numpy.ones((numpy.max(urpos), numpy.max(urpos))) * 255
-            
+
             # paste bands into image, (im-r1)*(nshades-1)/(r2-r1) + 1.5
             nshades = 256
             for bnum in range(nind):
                 mult = (nshades-1) / (pRange[bnum,1]-pRange[bnum,0])
                 d_im[llpos[bnum,0]:urpos[bnum,0], llpos[bnum,1]:urpos[bnum,1]]=(
                     mult*self.band(bnum) + (1.5-mult*pRange[bnum,0]) )
-            
+
             # FIX: need a mode to switch between above and below display
             if disp == 'nb':
                 JBhelpers.showIm(d_im[:self.band(0).shape[0]][:])

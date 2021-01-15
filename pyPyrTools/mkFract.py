@@ -13,7 +13,7 @@ def mkFract(*args):
               Make this more efficient!   '''
 
     if len(args) == 0:
-        print 'Error: input parameter dims required'
+        print('Error: input parameter dims required')
     else:
         if isinstance(args[0], (int, long)) or len(args[0]) == 1:
             dims = (args[0], args[0])
@@ -42,7 +42,7 @@ def mkFract(*args):
     fres = numpy.fft.ifft2(fres)
 
     if abs(fres.imag).max() > 1e-10:
-        print 'Symmetry error in creating fractal'
+        print('Symmetry error in creating fractal')
     else:
         res = numpy.real(fres)
         res = res / numpy.sqrt(var2(res))

@@ -8,7 +8,7 @@ def modulateFlip(*args):
         (e.g., see Simoncelli90).  '''
 
     if len(args) == 0:
-        print "Error: filter input parameter required."
+        print("Error: filter input parameter required.")
         return
 
     lfilt = args[0]
@@ -18,7 +18,7 @@ def modulateFlip(*args):
     elif lfilt.shape[0] == 1:
         lfilt = lfilt.reshape(lfilt.shape[1], 1)
     elif len(lfilt.shape) > 2 or lfilt.shape[1] != 1:
-        print 'Error: only 1D input supported.'
+        print('Error: only 1D input supported.')
         return
 
     sz = len(lfilt)

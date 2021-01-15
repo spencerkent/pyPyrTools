@@ -3,24 +3,24 @@ import scipy.signal
 
 def cconv2(*args):
     ''' RES = CCONV2(MTX1, MTX2, CTR)
-    
+
         Circular convolution of two matrices.  Result will be of size of
         LARGER vector.
-     
+
         The origin of the smaller matrix is assumed to be its center.
-        For even dimensions, the origin is determined by the CTR (optional) 
+        For even dimensions, the origin is determined by the CTR (optional)
         argument:
              CTR   origin
               0     DIM/2      (default)
-              1     (DIM/2)+1  
-    
-        Eero Simoncelli, 6/96.  Modified 2/97.  
+              1     (DIM/2)+1
+
+        Eero Simoncelli, 6/96.  Modified 2/97.
         Python port by Rob Young, 8/15  '''
-    
+
     if len(args) < 2:
-        print 'Error: cconv2 requires two input matrices!'
-        print 'Usage: cconv2(matrix1, matrix2, center)'
-        print 'where center parameter is optional'
+        print('Error: cconv2 requires two input matrices!')
+        print('Usage: cconv2(matrix1, matrix2, center)')
+        print('where center parameter is optional')
         return
     else:
         a = numpy.array(args[0])
@@ -38,9 +38,9 @@ def cconv2(*args):
         large = b
         small = a
     else:
-        print 'Error: one matrix must be larger than the other in both dimensions!'
+        print('Error: one matrix must be larger than the other in both dimensions!')
         return
-    
+
     ly = large.shape[0]
     lx = large.shape[1]
     sy = small.shape[0]

@@ -15,11 +15,11 @@ def blurDn(*args):
         function res = blurDn(im, nlevs, filt)  '''
 
     if len(args) == 0:
-        print "Error: image input parameter required."
+        print("Error: image input parameter required.")
         return
 
     im = numpy.array(args[0])
-    
+
     # optional args
     if len(args) > 1:
         nlevs = args[1]
@@ -39,7 +39,7 @@ def blurDn(*args):
         filt = [x/sum(sum(filt)) for x in filt]
 
     filt = numpy.array(filt)
-    
+
     if nlevs > 1:
         im = blurDn(im, nlevs-1, filt)
 
@@ -48,7 +48,7 @@ def blurDn(*args):
             # 1D image
             if len(filt.shape) > 1 and (filt.shape[1]!=1 and filt.shape[2]!=1):
                 # >1D filter
-                print 'Error: Cannot apply 2D filter to 1D signal'
+                print('Error: Cannot apply 2D filter to 1D signal')
                 return
             # orient filter and image correctly
             if im.shape[0] == 1:
@@ -57,7 +57,7 @@ def blurDn(*args):
             else:
                 if filt.shape[0] == 1:
                     filt = filt.T
-                
+
             res = corrDn(image = im, filt = filt, step = (2, 2))
             if len(im.shape) == 1 or im.shape[1] == 1:
                 res = numpy.reshape(res, (numpy.ceil(im.shape[0]/2.0).astype(int), 1))
@@ -72,5 +72,5 @@ def blurDn(*args):
             res = corrDn(image = im, filt = filt, step = (2,2))
     else:
         res = im
-            
+
     return res
